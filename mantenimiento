@@ -1,0 +1,28 @@
+---
+- name: Tarea de Mantenimiento
+  hosts: localhost
+  become: yes 
+
+  vars:
+    nuevo_usuario: administrador_ssm
+    directorio_proyecto: /opt/datos_de_proyecto
+
+  tasks:
+    - name: 1. Asegurar que el usuario {{ nuevo_usuario }} exista
+      ansible.builtin.user:
+        name: "{{ nuevo_usuario }}"
+        state: present
+        shell: /bin/bash
+        comment: Usuario creado por Ansible
+
+    - name: 2. Asegurar que el directorio exista y tenga los permisos correctos
+      ansible.builtin.file:
+        path: "{{ directorio_proyecto }}"
+        state: directory
+        owner: "{{ nuevo_usuario }}"
+        group: "{{ nuevo_usuario }}"
+        mode: '0755' 
+
+    - name: 3. Mostrar mensaje de finalización
+      ansible.builtin.debug:
+        msg: "El usuario '{{ nuevo_usuario }}' y el directorio '{{ directorio_proyecto }}' se han configurado correctamente."
